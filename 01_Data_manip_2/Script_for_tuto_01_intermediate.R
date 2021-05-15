@@ -204,3 +204,4 @@ tree.plots %>%              # the saving call withisn the do function
 # allows to use a lot of external functions within dplyr pipe chains. However, 
 # it is sometimes tricky to use and is becoming deprecated. This page shows an 
 # alternative solution using the purr package to save the files.
+
