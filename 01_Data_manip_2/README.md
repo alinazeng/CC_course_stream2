@@ -1,3 +1,4 @@
+
 # Data manipulation 2
 Efficient data manipulation with dplyr and pipes
 
@@ -12,4 +13,6 @@ The follow-up to our first [data manipulation tutorial](https://ourcodingclub.gi
 We'll play around with a subset of a large dataset of [trees within the Edinburgh council area](https://data.edinburghcouncilmaps.info/datasets/4dfc8f18a40346009b9fc32cbee34039_39). We have restricted it to the [Special Landscape Area](https://data.edinburghcouncilmaps.info/datasets/33969ec66f9b46cf9617c40c023bb89e_35) around Craigmillar Castle. __Both datasets are available under Governement Open License v3.0. Copyright City of Edinburgh Council, contains Ordnance Survey data © Crown copyright and database right 2019. The two datasets were accessed in April 2019.__
 
 For more about Coding Club, please see https://ourcodingclub.github.io/ and learn [how you can get involved!](https://ourcodingclub.github.io/workshop/)
+
+# test
 
