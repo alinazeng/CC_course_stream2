@@ -1,0 +1,104 @@
+---
+title: "RMarkdown Demo 1"
+author: "Alina Zeng"
+date: "22/05/2021"
+output:
+  html_document:
+    df_print: paged
+  latex_engine: xelatex
+  pdf_document: null
+geometry: left = 2.54cm, right = 2.54cm, top = 2.54cm, bottom = 2.54cm
+mainfont: Times New Roman
+---
+
+
+# Download the datasets for this example script from:
+  https://github.com/ourcodingclub/CC3-DataManip
+
+## Install and load the relevant packages ----------------------------------------------
+```{r}
+library(dplyr) # an excellent data manipulation package
+library(tidyr) # a package to format your data
+library(pander) #to create pretty tables
+library(knitr)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(message=FALSE,
+tidy.opts=list(width.cutoff=10))
+```
+
+## Set your working directory to the folder where you have downloaded the datasets
+
+```{r}
+setwd("C:/Users/alina/Documents/git/Git_Tutorials/CC_course_stream2/05_Markdown")
+```
+
+## Import data -------------------------------------------------------------
+
+
+```{r}
+elongation <- read.csv("EmpetrumElongation.csv", header = T) # stem elongation measurements on crowberry
+germination <- read.csv("Germination.csv", sep = ";") # germination of seeds subjected to toxic solutions
+```
+
+## Tidying the data ------------------------------------------------------------
+### Putting the data into long format using gather()
+
+```{r}
+elongation_long <- gather(elongation, Year, Length, c(X2007, X2008, X2009, X2010, X2011, X2012)) 
+  #gather() works like this: data, key, value, columns to gather. Here we want the lengths (value) to be gathered by year (key). Note that you are completely making up the names of the second and third arguments, unlike most functions in R.
+head(elongation_long)
+```
+
+## Investigating the data ------------------------------------------------------------
+### Create a boxplot of `elongation_long' to visualise elongation for each year.
+### This set of boxplots can be added to your R Markdown document by putting the code in a code chunk
+
+```{r}
+boxplot(Length ~ Year, 
+        data = elongation_long, 
+        xlab = "Year", 
+        ylab = "Elongation (cm)", 
+        main = "Annual growth of Empetrum hermaphroditum")
+```
+
+## Use filter() to keep only the rows of `germination' for species `SR' 
+
+```{r}
+germinSR <- filter(germination, Species == 'SR')
+```
+
+## Let's have a look at the distribution of germination across SR
+### This histogram can be added to your R Markdown document by simply putting the code in a code chunk
+### Try adding some plain text to your R markdown document to explain the histogram
+
+```{r}
+hist(germinSR$Nb_seeds_germin, breaks = 8)
+```
+
+## Use mutate() to create a new column of the germination percentage using the total number of seeds and the number of seeds that germinated
+
+```{r}
+germin_percent <- mutate(germination, Percent = Nb_seeds_germin / Nb_seeds_tot * 100)
+```
+
+# Use a pipe to get a table of summary statistics for each Seed type
+
+```{r}
+germin_summ <- germin_percent %>%
+  group_by(Species) %>%
+  summarise("Mean germination per" = mean(Nb_seeds_germin), "Max germination per" = max(Nb_seeds_germin), "Min germination per" = min(Nb_seeds_germin))
+```
+
+## Make a table of `germin_summ' in your R markdown document using pander(), the instructions can be found in the tutorial
+```{r}
+pander(germin_summ)
+```
+
+

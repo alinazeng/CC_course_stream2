@@ -1,0 +1,154 @@
+---
+title: "R Notebook Tutorial"
+author: "Alina Zeng"
+date: "22/05/2021"
+output: html_notebook
+---
+
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(message=FALSE,
+tidy.opts=list(width.cutoff=60))
+```
+
+# Learning the commands in **RMarkdown**
+*Hello darkness my old friend.*
+
+## What else is [there](https://ourcodingclub.github.io/tutorials/rmarkdown/index.html)?
+* yay
+1. Hello
+
+this is `setwd()` and you need to do it every time you start a new R project. 
+
+
+### This thingy below is called a **code chunk**.
+Loading packages
+```{r,warning = FALSE, include=FALSE}
+library(dplyr)
+```
+
+Loading biodiversity data
+*This data is a publicly available dataset of occurrence records for many animal, 
+plant, and fungi species, for 2000-2016 from the NBN Gateway*
+
+```{r}
+setwd("C:/Users/alina/Documents/git/Git_Tutorials/CC_course_stream2/05_Markdown")
+edidiv <- read.csv("edidiv.csv")
+```
+
+Constructing a **table of species richness** in each taxonomic group
+```{r}
+richness <- 
+  edidiv %>%
+    group_by(taxonGroup) %>%
+    summarise(Species_richness = n_distinct(taxonName))
+```
+
+Creating a barplot of species richness in each taxonomic group
+
+```{r}
+barplot(richness$Species_richness, 
+        names.arg = richness$taxonGroup, 
+        xlab = "Taxa", ylab = "Number of species", 
+        ylim = c(0,600)
+        ) 
+```
+
+Determining what the most common species is in each taxonomic group 
+
+```{r}
+max_abund <-
+  edidiv %>%
+    group_by(taxonGroup) %>%
+    summarise(taxonName = names(which.max(table(taxonName))))
+```
+
+Joining the two data frames together, using "taxonGroup" as the reference
+
+```{r}
+richness_abund <- inner_join(richness, max_abund, by = "taxonGroup")
+```
+
+Renaming the headers of the tables, and viewing the data frame
+
+```{r}
+richness_abund <- rename(richness_abund, Most_abundant =  taxonName, Taxon = taxonGroup)
+```
+
+### including figures
+
+```{r, fig.width = 4, fig.height = 3}
+A <- c("a", "a", "b", "b")
+B <- c(5, 10, 15, 20)
+dataframe <- data.frame(A, B)
+print(dataframe)
+boxplot(B~A,data=dataframe)
+```
+
+
+
+```{r}
+dataframe
+```
+
+
+```{r}
+library(knitr)
+kable(dataframe, digits = 2)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(pander)
+plant <- c("a", "b", "c")
+temperature <- c(20, 20, 20)
+growth <- c(0.65, 0.95, 0.15)
+dataframe <- data.frame(plant, temperature, growth)
+emphasize.italics.cols(3)   # Make the 3rd column italics
+pander(dataframe)           # Create the table
+```
+
+### Manually creating table using markdown syntax
+| Plant | Temp. | Growth |
+|:------|:-----:|-------:|
+| A     | 20    | 0.65   |
+| B     | 20    | 0.95   |
+| C     | 20    | 0.15   |
+
+
+```{r warning=FALSE}
+library(broom)
+library(pander)
+A <- c(20, 15, 10)
+B <- c(1, 2, 3)
+
+lm_test <- lm(A ~ B)            # Creating linear model
+
+table_obj <- tidy(lm_test)      # Using tidy() to create a new R object called table
+
+pander(table_obj, digits = 3)   # Using pander() to view the created table, with 3 sig figs 
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
