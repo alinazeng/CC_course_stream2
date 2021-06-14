@@ -6,6 +6,11 @@
 # Load libraries ----
 library(dplyr)  # For data manipulation
 library(ggplot2)  # For data visualisation
+library(tidyr)
+library(readr)
+library(gridExtra)
+library(Cairo)
+library(RColorBrewer)
 
 setwd("C:/Users/alina/Documents/git/Git_Tutorials/CC_course_stream2/03_Data_vis_2")
 
@@ -38,14 +43,27 @@ species_counts <- magic_veg %>%
 # therefore need to tell R that you already know how many species are in each plot. 
 # You do that by specifying the stat argument:
 
-
+png(filename="barplot_confused.png", 
+    type="cairo", ### this helps with resolution, love it!!
+    units="in", 
+    width=8, 
+    height=8, 
+    res=300)
 (hist <- ggplot(species_counts, aes(x = plot, y = Species_number)) +
     geom_histogram(stat = "identity"))
+dev.off()
 
 # Note: an equivalent alternative is to use geom_col (for column), which takes a y value and displays it
-(col <- ggplot(species_counts, aes(x = plot, y = Species_number)) +
-    geom_col()
-)
+png(filename="barplot_confused2.png", 
+    type="cairo", ### this helps with resolution, love it!!
+    units="in", 
+    width=8, 
+    height=8, 
+    res=300)
+col <- ggplot(species_counts, aes(x = plot, y = Species_number, color=plot)) +
+    geom_col()+
+    scale_color_brewer(palette = "Set2")
+dev.off()
 
 
 (hist <- ggplot(species_counts, aes(x = plot, y = Species_number, fill = land)) +
@@ -111,7 +129,12 @@ legend at once.
 # column outlines, etc.). You need to make sure you put in 
 # as many colours as there are factor levels in your data.
 
-
+png(filename="barplot_pretty_color.png", 
+    type="cairo", ### this helps with resolution, love it!!
+    units="in", 
+    width=8, 
+    height=8, 
+    res=300)
 (hist <- ggplot(species_counts, aes(x = plot, y = Species_number, fill = land)) +
     geom_histogram(stat = "identity", position = "dodge") + 
     scale_x_continuous(breaks = c(1,2,3,4,5,6)) + 
@@ -129,7 +152,7 @@ legend at once.
           legend.title = element_text(face = "bold"),
           legend.position = "bottom", 
           legend.box.background = element_rect(color = "grey", size = 0.3)))
-
+dev.off()
 
 ggsave("magical-sp-rich-hist.png", width = 7, height = 5, dpi = 300)
 # Create vectors with land names and species counts
